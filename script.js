@@ -108,4 +108,4 @@ const Game = (function() {
 
 })();
 
-Game.startGame();
+// Game.startGame();

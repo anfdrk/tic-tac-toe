@@ -3,10 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Tic Tac Toe</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+  <script src="script.js" defer></script>
 </head>
 <body>
-  
+  <header class="header">
+    <h1>Tic Tac Toe</h1>
+  </header>
+  <main class="main">
+    <div class="gameboard">
+      <div class="cell top left red">×</div>
+      <div class="cell top"></div>
+      <div class="cell top right"></div>
+      <div class="cell left red">×</div>
+      <div class="cell blue">o</div>
+      <div class="cell right"></div>
+      <div class="cell bottom left blue">o</div>
+      <div class="cell bottom"></div>
+      <div class="cell bottom right"></div>
+    </div>
+    <div class="restart">
+      <button class="restart-btn">Restart</button>
+    </div>
+  </main>
+  <footer class="footer">
+    <p>Created by anfdrk</p>
+  </footer>
 </body>
-<script src="script.js"></script>
 </html>
