@@ -29,6 +29,7 @@ const GameBoard = (() => {
 
 const ScreenController = (() => {
   const status = document.getElementById('status');
+  const playerSign = document.getElementById('sign');
   const cells = document.querySelectorAll('.cell');
   const restartBtn = document.querySelector('.restart-btn');
 
@@ -44,7 +45,8 @@ const ScreenController = (() => {
     GameBoard.reset();
     GameController.reset();
     updateGameboard();
-    updateStatus('╳ Turn');
+    playerSign.classList.remove('hidden');
+    updateStatus('╳', 'turn');
   });
 
   function updateGameboard() {
@@ -53,8 +55,19 @@ const ScreenController = (() => {
     }
   }
 
-  function updateStatus(message) {
-    status.textContent = message;
+  function updateStatus(sign, message) {
+    if (message === 'turn') {
+      playerSign.textContent = sign;
+      status.textContent = 'Turn';
+    }
+    if (message === 'win') {
+      playerSign.textContent = sign;
+      status.textContent = 'WIN!';
+    }
+    if (message === 'draw') {
+      playerSign.classList.add('hidden');
+      status.textContent = 'DRAW';
+    }
   }
 
   return { updateStatus };
@@ -65,22 +78,22 @@ const GameController = (() => {
   const playerO = Player('◯');
   let currentPlayer = playerX;
   let isOver = false;
-  ScreenController.updateStatus('╳ Turn');
+  ScreenController.updateStatus(currentPlayer.sign, 'turn');
 
   function makeMove(index) {
     GameBoard.setCell(index, currentPlayer.sign);
     if (checkWin()) {
-      ScreenController.updateStatus(`${currentPlayer.sign} WIN!`);
+      ScreenController.updateStatus(currentPlayer.sign, 'win');
       this.isOver = true;
       return;
     }
     if (checkDraw()) {
-      ScreenController.updateStatus('DRAW');
+      ScreenController.updateStatus(currentPlayer.sign, 'draw');
       this.isOver = true;
       return;
     }
     switchPlayer();
-    ScreenController.updateStatus(`${currentPlayer.sign} Turn`);
+    ScreenController.updateStatus(currentPlayer.sign, 'turn');
   }
 
   function checkWin() {
