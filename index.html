@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -15,16 +15,17 @@
     <h1>Tic Tac Toe</h1>
   </header>
   <main class="main">
+    <div class="status" id="status"></div> 
     <div class="gameboard">
-      <div class="cell top left red">×</div>
-      <div class="cell top"></div>
-      <div class="cell top right"></div>
-      <div class="cell left red">×</div>
-      <div class="cell blue">o</div>
-      <div class="cell right"></div>
-      <div class="cell bottom left blue">o</div>
-      <div class="cell bottom"></div>
-      <div class="cell bottom right"></div>
+      <div class="cell grid-top grid-left" data-index="0"></div>
+      <div class="cell grid-top" data-index="1"></div>
+      <div class="cell grid-top grid-right" data-index="2"></div>
+      <div class="cell grid-left" data-index="3"></div>
+      <div class="cell" data-index="4"></div>
+      <div class="cell grid-right" data-index="5"></div>
+      <div class="cell grid-bottom grid-left" data-index="6"></div>
+      <div class="cell grid-bottom" data-index="7"></div>
+      <div class="cell grid-bottom grid-right" data-index="8"></div>
     </div>
     <div class="restart">
       <button class="restart-btn">Restart</button>

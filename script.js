@@ -1,111 +1,119 @@
-const Game = (function() {
+const Player = (sign) => {
+  let score = 0;
+  const getScore = () => score;
+  const incrementScore = () => score++;
+  return { sign, getScore, incrementScore }
+};
 
-  let board = [
-    [null, null, null],
-    [null, null, null], 
-    [null, null, null] 
-  ];
-  let currentPlayer = 'x';
+const GameBoard = (() => {
+  let board = ['', '', '', '', '', '', '', '', ''];
 
-  function makeMove(row, col) {
-    
-    if(board[row][col]) {
-      return false; 
-    }
-
-    board[row][col] = currentPlayer;
-    // togglePlayer();
-    return true;
-
+  function getCell(index) {
+    return board[index];
   }
 
-  function getWinner() {
-
-    for (let i = 0; i < 3; i++) {
-      if (board[i][0] == board[i][1] && board[i][1] == board[i][2]) {
-        return board[i][0]; 
-      }
-    }
-  
-    for (let i = 0; i < 3; i++) {
-      if (board[0][i] == board[1][i] && board[1][i] == board[2][i]) {
-        return board[0][i];
-      }
-    }
-  
-    if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) {
-      return board[0][0];
-    }
-    if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
-      return board[0][2];
-    }  
-  
-    return null;
-  
+  function setCell(index, value) {
+    board[index] = value;
   }
 
-  function isDraw() {
-    return board.every(row => row.every(cell => cell !== null));
+  function reset() {
+    board = ['', '', '', '', '', '', '', '', ''];
   }
 
-
-  function togglePlayer() {
-    currentPlayer = currentPlayer === "x" ? "o" : "x";
+  function isFull() {
+    return board.every(cell => cell !== '');
   }
 
-  function printBoard() {
-    for (let i = 0; i < 3; i++) {
-
-      let row = '';
-  
-      for (let j = 0; j < 3; j++) {
-         row += `[${board[i][j] || ' '}]`; 
-      }
-  
-      console.log(row);
-  
-    }
-  }
-
-
-  function startGame() {
-
-    while(true) {
-
-      printBoard(); // показать поле
-
-      const row = prompt("Введите номер строки"); 
-      const col = prompt("Введите номер столбца");
-
-      if(!makeMove(row, col)) {
-        console.log("Ячейка занята!"); 
-        continue;
-      }
-
-      const winner = getWinner();
-
-      if (winner) {
-        console.log(`Выиграл ${winner}!`);
-        break; 
-      } 
-      
-      if (isDraw()) {
-        console.log("Ничья!");
-        break;
-      }
-
-      togglePlayer();
-
-    }
-
-  }
-
-  return {
-    makeMove,
-    getWinner,
-    startGame
-  }
-
+  return { getCell, setCell, reset, isFull };
 })();
 
-// Game.startGame();
+const ScreenController = (() => {
+  const status = document.getElementById('status');
+  const cells = document.querySelectorAll('.cell');
+  const restartBtn = document.querySelector('.restart-btn');
+
+  cells.forEach((cell) => {
+    cell.addEventListener('click', (e) => {
+      if (GameController.isOver || e.target.textContent !== '') return;
+      GameController.makeMove(parseInt(e.target.dataset.index));
+      updateGameboard();
+    });
+  });
+
+  restartBtn.addEventListener('click', () => {
+    GameBoard.reset();
+    GameController.reset();
+    updateGameboard();
+    updateStatus('╳ Turn');
+  });
+
+  function updateGameboard() {
+    for (let i = 0; i < cells.length; i++) {
+      cells[i].textContent = GameBoard.getCell(i);
+    }
+  }
+
+  function updateStatus(message) {
+    status.textContent = message;
+  }
+
+  return { updateStatus };
+})();
+
+const GameController = (() => {
+  const playerX = Player('╳');
+  const playerO = Player('◯');
+  let currentPlayer = playerX;
+  let isOver = false;
+  ScreenController.updateStatus('╳ Turn');
+
+  function makeMove(index) {
+    GameBoard.setCell(index, currentPlayer.sign);
+    if (checkWin()) {
+      ScreenController.updateStatus(`${currentPlayer.sign} WIN!`);
+      this.isOver = true;
+      return;
+    }
+    if (checkDraw()) {
+      ScreenController.updateStatus('DRAW');
+      this.isOver = true;
+      return;
+    }
+    switchPlayer();
+    ScreenController.updateStatus(`${currentPlayer.sign} Turn`);
+  }
+
+  function checkWin() {
+    const winCombinations = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (const combo of winCombinations) {
+      if (combo.every(index => GameBoard.getCell(index) === currentPlayer.sign)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function checkDraw() {
+    return GameBoard.isFull();
+  }
+
+  function switchPlayer() {
+    currentPlayer = currentPlayer === playerX ? playerO : playerX;
+  }
+
+  function reset() {
+    currentPlayer = playerX;
+    this.isOver = false;
+  }
+
+  return { makeMove, reset, isOver };
+})();
