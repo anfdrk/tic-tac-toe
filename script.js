@@ -32,11 +32,19 @@ const ScreenController = (() => {
   const playerSign = document.getElementById('sign');
   const cells = document.querySelectorAll('.cell');
   const restartBtn = document.querySelector('.restart-btn');
+  const crossImg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <line x1="10" y1="10" x2="90" y2="90" stroke-width="20" />
+    <line x1="90" y1="10" x2="10" y2="90" stroke-width="20" />
+  </svg>`;
+  const circleImg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="40" stroke-width="20" fill="none" />
+  </svg>`;
 
   cells.forEach((cell) => {
-    cell.addEventListener('click', (e) => {
-      if (GameController.isOver || e.target.textContent !== '') return;
-      GameController.makeMove(parseInt(e.target.dataset.index));
+    cell.addEventListener('click', () => {
+      const cellContent = (GameBoard.getCell(parseInt(cell.dataset.index)));
+      if (GameController.isOver || cellContent !== '') return;
+      GameController.makeMove(parseInt(cell.dataset.index));
       updateGameboard();
     });
   });
@@ -46,22 +54,32 @@ const ScreenController = (() => {
     GameController.reset();
     updateGameboard();
     playerSign.classList.remove('hidden');
-    updateStatus('╳', 'turn');
+    updateStatus('X', 'turn');
   });
 
   function updateGameboard() {
     for (let i = 0; i < cells.length; i++) {
-      cells[i].textContent = GameBoard.getCell(i);
+      const cellContent = GameBoard.getCell(i);
+      if (cellContent === 'X') {
+        cells[i].innerHTML = crossImg;
+      } else if (cellContent === 'O') {
+        cells[i].innerHTML = circleImg;
+      } else {
+        cells[i].textContent = '';
+      }
     }
   }
 
   function updateStatus(sign, message) {
+    if (sign === 'X') {
+      playerSign.innerHTML = crossImg;
+    } else {
+      playerSign.innerHTML = circleImg;
+    }
     if (message === 'turn') {
-      playerSign.textContent = sign;
       status.textContent = 'Turn';
     }
     if (message === 'win') {
-      playerSign.textContent = sign;
       status.textContent = 'WIN!';
     }
     if (message === 'draw') {
@@ -74,8 +92,8 @@ const ScreenController = (() => {
 })();
 
 const GameController = (() => {
-  const playerX = Player('╳');
-  const playerO = Player('◯');
+  const playerX = Player('X');
+  const playerO = Player('O');
   let currentPlayer = playerX;
   let isOver = false;
   ScreenController.updateStatus(currentPlayer.sign, 'turn');

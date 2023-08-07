@@ -53,11 +53,14 @@ h1 {
 }
 
 .sign {
-  font-size: 1.8rem;
-  font-weight: 900;
-  line-height: 3rem;
-  width: 3rem;
   margin-right: 1rem;
+  width: 40px;
+  height: 40px;
+}
+
+.sign line,
+.sign circle {
+  stroke: var(--text-color);
 }
 
 .hidden {
@@ -95,12 +98,17 @@ h1 {
   height: 150px;
 }
 
-.red {
-  color: var(--red);
+.cell svg {
+  width: 100px;
+  height: 100px;
 }
 
-.blue {
-  color: var(--blue);
+.cell line {
+  stroke: var(--red);
+}
+
+.cell circle {
+  stroke: var(--blue);
 }
 
 .grid-top {
