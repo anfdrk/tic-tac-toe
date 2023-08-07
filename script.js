@@ -53,6 +53,7 @@ const ScreenController = (() => {
     GameBoard.reset();
     GameController.reset();
     updateGameboard();
+    removeHilight();
     playerSign.classList.remove('hidden');
     updateStatus('X', 'turn');
   });
@@ -69,7 +70,7 @@ const ScreenController = (() => {
       }
     }
   }
-
+  
   function updateStatus(sign, message) {
     if (sign === 'X') {
       playerSign.innerHTML = crossImg;
@@ -87,8 +88,18 @@ const ScreenController = (() => {
       status.textContent = 'DRAW';
     }
   }
+  
+  function highlightCombo(combo) {
+    for (const index of combo) {
+      cells[index].classList.add('win-combo');
+    }
+  }
+  
+  function removeHilight() {
+    cells.forEach(cell => cell.classList.remove('win-combo'));
+  }
 
-  return { updateStatus };
+  return { updateStatus, highlightCombo };
 })();
 
 const GameController = (() => {
@@ -100,7 +111,9 @@ const GameController = (() => {
 
   function makeMove(index) {
     GameBoard.setCell(index, currentPlayer.sign);
-    if (checkWin()) {
+    const winCombo = checkWin();
+    if (winCombo) {
+      ScreenController.highlightCombo(winCombo);
       ScreenController.updateStatus(currentPlayer.sign, 'win');
       this.isOver = true;
       return;
@@ -127,10 +140,10 @@ const GameController = (() => {
     ];
     for (const combo of winCombinations) {
       if (combo.every(index => GameBoard.getCell(index) === currentPlayer.sign)) {
-        return true;
+        return combo;
       }
     }
-    return false;
+    return null;
   }
 
   function checkDraw() {

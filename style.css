@@ -6,6 +6,7 @@
   --text-color: #4e4f62;
   --background: #f0eef1;
   --header: #fffbfb;
+  --win-combo: #f7f6f6;
 }
 
 *,
@@ -109,6 +110,10 @@ h1 {
 
 .cell circle {
   stroke: var(--blue);
+}
+
+.win-combo {
+  background-color: var(--win-combo);
 }
 
 .grid-top {
