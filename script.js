@@ -32,6 +32,7 @@ const ScreenController = (() => {
   const playerSign = document.getElementById('sign');
   const cells = document.querySelectorAll('.cell');
   const restartBtn = document.querySelector('.restart-btn');
+  const winline = document.querySelector('.winline');
   const crossImg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
     <line x1="10" y1="10" x2="90" y2="90" stroke-width="20" />
     <line x1="90" y1="10" x2="10" y2="90" stroke-width="20" />
@@ -52,8 +53,8 @@ const ScreenController = (() => {
   restartBtn.addEventListener('click', () => {
     GameBoard.reset();
     GameController.reset();
+    winline.innerHTML = '';
     updateGameboard();
-    removeHilight();
     playerSign.classList.remove('hidden');
     updateStatus('X', 'turn');
   });
@@ -88,18 +89,44 @@ const ScreenController = (() => {
       status.textContent = 'DRAW';
     }
   }
-  
-  function highlightCombo(combo) {
-    for (const index of combo) {
-      cells[index].classList.add('win-combo');
+
+  function drawWinLine(combo, sign) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    winline.appendChild(svg);
+    svg.appendChild(line);
+    svg.setAttribute('viewBox', '0 0 100 100');
+    line.setAttribute('stroke-width', '5');
+    line.classList.add('winline-animation');
+    
+    const coordinates = getCoordinates(combo);
+    line.setAttribute('x1', coordinates[0]);
+    line.setAttribute('y1', coordinates[1]);
+    line.setAttribute('x2', coordinates[2]);
+    line.setAttribute('y2', coordinates[3]);
+    
+    if (sign === 'X') {
+      line.setAttribute('stroke', '#d87a63');
+    } else {
+      line.setAttribute('stroke', '#63c1d8');
     }
   }
-  
-  function removeHilight() {
-    cells.forEach(cell => cell.classList.remove('win-combo'));
-  }
 
-  return { updateStatus, highlightCombo };
+  function getCoordinates(combo) {
+    const winLineCoordinates = {
+      '0,1,2': [2, 19, 98, 19],
+      '3,4,5': [2, 50, 98, 50],
+      '6,7,8': [2, 82, 98, 82],
+      '0,3,6': [19, 2, 19, 98],
+      '1,4,7': [50, 2, 50, 98],
+      '2,5,8': [81, 2, 81, 98],
+      '0,4,8': [5, 5, 95, 95],
+      '2,4,6': [95, 5, 5, 95],
+    };
+    return winLineCoordinates[combo.join(',')];
+  }
+  
+  return { updateStatus, drawWinLine };
 })();
 
 const GameController = (() => {
@@ -113,7 +140,7 @@ const GameController = (() => {
     GameBoard.setCell(index, currentPlayer.sign);
     const winCombo = checkWin();
     if (winCombo) {
-      ScreenController.highlightCombo(winCombo);
+      ScreenController.drawWinLine(winCombo, currentPlayer.sign);
       ScreenController.updateStatus(currentPlayer.sign, 'win');
       this.isOver = true;
       return;

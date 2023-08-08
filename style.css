@@ -79,13 +79,39 @@ h1 {
   padding: 0.5rem;
   font-size: 1.5rem;
 }
-
+.gameboard-wrapper {
+  width: 490px;
+  height: 490px;
+  margin: 3rem auto 6rem;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
 .gameboard {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   width: 450px;
   height: 450px;
-  margin: 3rem auto 6rem;
+}
+
+.winline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.winline-animation {
+  stroke-dasharray: 150;
+  stroke-dashoffset: 100;
+  animation: draw-line 0.5s linear forwards;
 }
 
 .cell {
