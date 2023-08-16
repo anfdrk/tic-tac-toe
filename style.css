@@ -84,9 +84,13 @@ h1 {
 
 .controls {
   display: flex;
-  justify-content: space-around;
-  gap: 1rem;
-  margin-bottom: 1.2rem;
+  justify-content: space-between;
+  margin: 0 auto 1.2rem;
+  width: 90%;
+}
+
+.game-mode-wrapper {
+  position: relative;
 }
 
 .game-mode {
@@ -100,10 +104,14 @@ h1 {
   padding: 0.7em;
   width: 170px;
   background-color: var(--header);
-  background-image: url(images/arrow.svg);
-  background-repeat: no-repeat;
-  background-size: 16px;
-  background-position: 136px;
+  height: 50px;
+}
+
+.fa-caret-down {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
 }
 
 .game-mode:hover {
@@ -296,14 +304,10 @@ option {
   margin-right: 1rem;
 }
 
-.github-ref:hover {
+.github-ref:hover span {
   text-decoration: underline;
 }
 
-.github-ref svg {
-  width: 1.2rem;
-}
-
-.github-ref path {
-  fill: var(--base-color);
+.fa-github {
+  font-size: 1.3rem;
 }
