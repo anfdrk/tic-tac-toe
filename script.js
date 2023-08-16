@@ -7,10 +7,6 @@ const Player = (sign = '', type = 'human') => {
 const BotPlayer = (sign = '', type = 'bot') => {
   const getSign = () => sign;
   const getType = () => type;
-  const changeSide = () => {
-    sign = (sign === 'X') ? 'O' : 'X';
-  };
-
   const makeMove = () => {
     const emptyCells = GameBoard.getEmptyCells();
     if (emptyCells.length > 0) {
@@ -19,7 +15,7 @@ const BotPlayer = (sign = '', type = 'bot') => {
     }
   };
   
-  return { getSign, getType, changeSide, makeMove };
+  return { getSign, getType, makeMove };
 };
 
 const GameBoard = (() => {
@@ -64,6 +60,8 @@ const ScreenController = (() => {
   const winline = document.querySelector('.winline');
   const radioX = document.getElementById('sideX');
   const radioO = document.getElementById('sideO');
+  const scoreX = document.getElementById('x-score');
+  const scoreO = document.getElementById('o-score');
   const crossImg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
     <line x1="10" y1="10" x2="90" y2="90" stroke-width="20" />
     <line x1="90" y1="10" x2="10" y2="90" stroke-width="20" />
@@ -82,14 +80,15 @@ const ScreenController = (() => {
   function handleModeSelect(e) {
     const mode = e.target.value;
     GameController.setMode(mode);
-    toggleSideChoser(mode);
+    toggleShowSideChoser(mode);
     winline.innerHTML = '';
     updateGameboard();
     playerSign.classList.remove('hidden');
     updateStatus(GameController.getCurrentPlayer(), 'turn');
+    resetScore();
   }
 
-  function toggleSideChoser(mode) {
+  function toggleShowSideChoser(mode) {
     if (mode === 'vs-bot') {
       sideChoser.style.display = 'flex';
       radioX.checked = true;
@@ -105,6 +104,7 @@ const ScreenController = (() => {
       updateGameboard();
       playerSign.classList.remove('hidden');
       updateStatus(GameController.getCurrentPlayer(), 'turn');
+      resetScore();
     }
   }
 
@@ -146,6 +146,17 @@ const ScreenController = (() => {
       playerSign.classList.add('hidden');
       status.textContent = 'DRAW';
     }
+  }
+
+  function updateScore(winner) {
+    if (winner === 'X') {
+      scoreX.textContent++;
+    } else scoreO.textContent++;
+  }
+
+  function resetScore() {
+    scoreX.textContent = 0;
+    scoreO.textContent = 0;
   }
 
   function drawWinLine(combo, sign) {
@@ -191,7 +202,7 @@ const ScreenController = (() => {
   gameModeSelect.addEventListener('change', handleModeSelect);
   sideChoser.addEventListener('change', handleSideChose);
   
-  return { updateStatus, drawWinLine };
+  return { updateStatus, drawWinLine, updateScore };
 })();
 
 const GameController = (() => {
@@ -257,6 +268,7 @@ const GameController = (() => {
     if (winCombo) {
       ScreenController.drawWinLine(winCombo, currentPlayer.getSign());
       ScreenController.updateStatus(currentPlayer.getSign(), 'win');
+      ScreenController.updateScore(currentPlayer.getSign());
       isOver = true;
       return;
     }
